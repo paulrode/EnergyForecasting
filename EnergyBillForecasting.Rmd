@@ -50,8 +50,17 @@ if (!file.exists("data")) {
 ```
 
 ```{r, echo="FALSE", results='hide', include=FALSE }
-utility_bills <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MASTER METERING DATA.csv")
 
+###############################################################################
+#                     Read data in and get date formats right                 #
+###############################################################################
+
+setAs("character","myDate", function(from) as.Date(from, format="%m/%d/%Y"))
+setAs("character","myDate", function(from) mdy(from))
+utility_bills <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MASTER METERING DATA.csv", colClasses = c("character", "character","character","myDate", "myDate", "integer", "numeric", "character","numeric", "character"))
+
+utility_bills[, Period:= (utility_bills$`Start Date`) - (utility_bills$`End Date`)]
+str(utility_bills)
 
 ```
 
