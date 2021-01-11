@@ -7,6 +7,11 @@ output: html_document
 
 ```{r setup, echo="FALSE", results='hide', include=FALSE }
 
+###############################################################################
+#                             Set up envirment                                #
+###############################################################################
+
+
   # Enviroment 
   # Loading and preprocessing the data
   #Set up enviroment for R scrip  
@@ -54,19 +59,17 @@ if (!file.exists("data")) {
 ###############################################################################
 #                     Read data in and get date formats right                 #
 ###############################################################################
-setClass("empty.is.0")
-setAs("character", "empty.is.0",
-  function(from) replace(as.numeric(from), from == "", 0))
 
-# setAs("character","myDate", function(from) as.Date(from, format="%m/%d/%Y"))
-setAs("character","myDate", function(from) mdy(from))
-utility_bills <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MASTER METERING DATA.csv", colClasses = c("character", "character","character","myDate", "myDate", "integer", "numeric", "character","numeric", "character"))
 
-utility_bills <- replace_na(utility_bills, list(Demand = 0)) 
+setAs("character","myDate", function(from) {mdy_hm(from)})
 
-utility_bills[, Period:= (utility_bills$`Start Date`) - (utility_bills$`End Date`)]
-str(utility_bills)
-utility_bills["Demand" %like% "N/A",]
+Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = (c("myDate", "numberc", "Character")))
+
+Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = (c("myDate", "numberc", "Character")))
+
+ggplot(Electric_Data)
+
+
 
 ```
 
