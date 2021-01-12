@@ -63,11 +63,27 @@ if (!file.exists("data")) {
 
 setAs("character","myDate", function(from) {mdy_hm(from)})
 
-Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = (c("myDate", "numberc", "Character")))
+Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = (c("myDate", "double", "Character")))
 
 Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = (c("myDate", "numberc", "Character")))
 
-ggplot(Electric_Data)
+
+```
+
+
+```{r, echo="FALSE", results='hide', include=FALSE }
+
+###############################################################################
+#                               Do Simple Plots                               #
+###############################################################################
+
+
+Electric_Data[Steam_Data, on=.(Date=Date)]
+ED <- as.data.frame(Electric_Data)
+ED %>% filter(Date > ymd("2020-1-1")) %>%
+ggplot( aes(Date, Value)) +
+  geom_point()
+
 
 
 
