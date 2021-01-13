@@ -63,9 +63,9 @@ if (!file.exists("data")) {
 
 setAs("character","myDate", function(from) {mdy_hm(from)})
 
-Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = (c("myDate", "double", "Character")))
+Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
 
-Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = (c("myDate", "numberc", "Character")))
+Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"))
 
 
 ```
@@ -78,13 +78,22 @@ Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Ener
 ###############################################################################
 
 
-Electric_Data[Steam_Data, on=.(Date=Date)]
+Utility_Data <- Electric_Data[Steam_Data, on=.(Date=Date)]
+Utility_Data <- Utility_Data[,Value:= as.double(Value),] -> UD
+Utility_Data[,sum(Value), month(Date)] -> ValuePerDay
+
 ED <- as.data.frame(Electric_Data)
-ED %>% filter(Date > ymd("2020-1-1")) %>%
+ED %>% filter(Date > ymd("2020-11-1")) -> ED
 ggplot( aes(Date, Value)) +
   geom_point()
 
+png(filename="bench_query_sort.png", width=600, height=1200)
 
+ggplot(data=ED, aes(x=Date, y=Value)) + 
+  geom_line(size=0.001) + 
+  labs(x = "Date", y = "kWh") + 
+  scale_fill_continuous(guide = guide_legend(title = NULL)) +
+  theme_bw() 
 
 
 ```
