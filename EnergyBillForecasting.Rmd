@@ -54,6 +54,8 @@ if (!file.exists("data")) {
 }
 ```
 
+
+
 ```{r, echo="FALSE", results='hide', include=FALSE }
 
 ###############################################################################
@@ -79,15 +81,11 @@ Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Ener
 
 
 Utility_Data <- Electric_Data[Steam_Data, on=.(Date=Date)]
-Utility_Data <- Utility_Data[,Value:= as.double(Value),] -> UD
+Utility_Data <- Utility_Data[,Value:= as.double(Value),]
 Utility_Data[,sum(Value), month(Date)] -> ValuePerDay
 
-ED <- as.data.frame(Electric_Data)
-ED %>% filter(Date > ymd("2020-11-1")) -> ED
-ggplot( aes(Date, Value)) +
-  geom_point()
 
-png(filename="bench_query_sort.png", width=600, height=1200)
+png(filename="bench_query_sort.png", width=1200, height=300)
 
 ggplot(data=ED, aes(x=Date, y=Value)) + 
   geom_line(size=0.001) + 
