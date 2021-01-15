@@ -67,7 +67,7 @@ setAs("character","myDate", function(from) {mdy_hm(from)})
 
 Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
 
-Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"))
+Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"), stringsAsFactors = TRUE)
 
 
 ```
@@ -78,6 +78,10 @@ Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Ener
 ###############################################################################
 #                               Do Simple Plots                               #
 ###############################################################################
+
+Steam_Data[, Value := as.integer(Value)]
+Steam_Data[, Daily := sum(Value), by=list(year(Date), month(Date), day(Date))] -> Steam1
+
 
 
 Utility_Data <- Electric_Data[Steam_Data, on=.(Date=Date)]
