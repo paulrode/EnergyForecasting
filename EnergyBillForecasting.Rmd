@@ -79,24 +79,24 @@ Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Ener
 #                               Do Simple Plots                               #
 ###############################################################################
 
+Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"), stringsAsFactors = TRUE)
 Steam_Data[, Value := as.integer(Value)]
-Steam_Data[, Daily := sum(Value), by=list(year(Date), month(Date), day(Date))] -> Steam1
-
-
-
-Utility_Data <- Electric_Data[Steam_Data, on=.(Date=Date)]
-Utility_Data <- Utility_Data[,Value:= as.double(Value),]
-Utility_Data[,sum(Value), month(Date)] -> ValuePerDay
-
+Steam_Data[, ymdDate := date(Date)]
+Steam_Data[, .(Value = sum(Value)), by = ymdDate] -> Steam1 #Summarise kWh per day. 
+Steam_Data[, .(Value = mean(Value)), by = month(ymdDate)] -> Steam2 #Summarise kWh per day. 
 
 png(filename="bench_query_sort.png", width=1200, height=300)
-
-ggplot(data=ED, aes(x=Date, y=Value)) + 
-  geom_line(size=0.001) + 
-  labs(x = "Date", y = "kWh") + 
+ggplot(data=Steam1, aes(x=ymdDate, y=Value)) + 
+  geom_col(size=0.001) + 
+  labs(x = "Date", y = "mlb") + 
   scale_fill_continuous(guide = guide_legend(title = NULL)) +
   theme_bw() 
 
+ggplot(data=Steam2, aes(x=month, y=Value)) + 
+  geom_col(size=0.001) + 
+  labs(x = "Month", y = "mlb") + 
+  scale_fill_continuous(guide = guide_legend(title = NULL)) +
+  theme_bw() 
 
 ```
 
