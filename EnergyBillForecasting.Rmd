@@ -73,6 +73,11 @@ Steam_Data[, ymdDate := date(Date)]
 Steam_Data[, .(Value = sum(Value)), by = ymdDate] -> SteamPerDay #Summarise kWh per day. 
 
 CoolingDD <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling.txt")
+
+# CoolingDD.1 = melt(CoolingDD[Region == 3004,], measure.vars = names, variable.name = "CDD")
+
+
+
 ```
 
 
@@ -92,6 +97,11 @@ ggplot(data=SteamPerDay, aes(x=ymdDate, y=Value)) +
 
 ggplot(data=SteamPerDay, aes(x=ymdDate, y=Value)) + 
   geom_area(size=0.001) + 
+  labs(x = "Date", y = "mlb") + 
+  theme_bw() 
+
+ggplot(data=SteamPerDay, aes(x=ymdDate, y=Value)) + 
+  geom_point(size=0.001) + 
   labs(x = "Date", y = "mlb") + 
   theme_bw() 
 
