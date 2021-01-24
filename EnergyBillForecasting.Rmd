@@ -72,9 +72,22 @@ Steam_Data[, Value := as.integer(Value)]
 Steam_Data[, ymdDate := date(Date)]
 Steam_Data[, .(Value = sum(Value)), by = ymdDate] -> SteamPerDay #Summarise kWh per day. 
 
-CoolingDD <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling.txt")
 
-# CoolingDD.1 = melt(CoolingDD[Region == 3004,], measure.vars = names, variable.name = "CDD")
+##########   Bring in 2020 Cooling and Heating Data  ##########
+
+CoolingDD <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling.txt") 
+CoolingDD[Region == 3004,] -> CoolingDD
+CoolingDD[,!(1), with = FALSE] -> CoolingDD
+names <- colnames(CoolingDD)
+CoolingDD <- melt(CoolingDD, measure.vars = names, variable.name = "week")
+#CoolingDD[, ymd(week)] -> CoolingDD
+
+HeatingDD <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Heating.txt") 
+HeatingDD[Region == 3004,] -> HeatingDD
+HeatingDD[,!(1), with = FALSE] -> HeatingDD
+names <- colnames(HeatingDD)
+HeatingDD <- melt(HeatingDD, measure.vars = names, variable.name = "week")
+
 
 
 
