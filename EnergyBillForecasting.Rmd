@@ -82,7 +82,7 @@ names <- colnames(CoolingDD2018)
 CoolingDD2018 <- melt(CoolingDD2018, measure.vars = names, variable.name = "week")
 CollingDD2018 <- CoolingDD2018[, week := ymd(week)] 
 
-CoolingDD2019 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling2020.txt") 
+CoolingDD2019 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling2019.txt") 
 CoolingDD2019[Region == 3004,] -> CoolingDD2019
 CoolingDD2019[,!(1), with = FALSE] -> CoolingDD2019
 names <- colnames(CoolingDD2019)
@@ -96,15 +96,8 @@ names <- colnames(CoolingDD2020)
 CoolingDD2020 <- melt(CoolingDD2020, measure.vars = names, variable.name = "week")
 CollingDD2020 <- CoolingDD2020[, week := ymd(week)] 
 
-CoolingDD2021 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling2020.txt") 
-CoolingDD2021[Region == 3004,] -> CoolingDD2021
-CoolingDD2021[,!(1), with = FALSE] -> CoolingDD2021
-names <- colnames(CoolingDD2021)
-CoolingDD2021 <- melt(CoolingDD2021, measure.vars = names, variable.name = "week")
-CoolingDD2021 <- CoolingDD2021[, week := ymd(week)] 
-
-rbind(CoolingDD2018, CoolingDD2019, CoolingDD2020, CoolingDD2021) -> CoolingDD
-
+CoolingDD <- rbind(CoolingDD2018, CoolingDD2019, CoolingDD2020) 
+setnames(CoolingDD, c("week", "value"), c("week", "CDD"))
 
 
 HeatingDD2018 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Heating2018.txt") 
@@ -115,8 +108,8 @@ HeatingDD2018 <- melt(HeatingDD2018, measure.vars = names, variable.name = "week
 HeatingDD2018 <- HeatingDD2018[, week := ymd(week)] 
 
 HeatingDD2019 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Heating2020.txt") 
-HeatingDD2019[Region == 3004,] -> CoolingDD2019
-HeatingDD2019[,!(1), with = FALSE] -> CoolingDD2019
+HeatingDD2019[Region == 3004,] -> HeatingDD2019
+HeatingDD2019[,!(1), with = FALSE] -> HeatingDD2019
 names <- colnames(HeatingDD2019)
 HeatingDD2019 <- melt(HeatingDD2019, measure.vars = names, variable.name = "week")
 HeatingDD2019 <- HeatingDD2019[, week := ymd(week)] 
@@ -128,15 +121,12 @@ names <- colnames(HeatingDD2020)
 HeatingDD2020 <- melt(HeatingDD2020, measure.vars = names, variable.name = "week")
 HeatingDD2020 <- HeatingDD2020[, week := ymd(week)] 
 
-HeatingDD2021 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling2020.txt") 
-HeatingDD2021[Region == 3004,] -> HeatingDD2021
-HeatingDD2021[,!(1), with = FALSE] -> HeatingDD2021
-names <- colnames(HeatingDD2021)
-HeatingDD2021 <- melt(HeatingDD2021, measure.vars = names, variable.name = "week")
-HeatingDD2021 <- HeatingDD2021[, week := ymd(week)] 
+HeatingDD <- rbind(HeatingDD2018, HeatingDD2019, HeatingDD2020) 
+setnames(HeatingDD, c("week", "value"), c("week", "HDD"))
 
-rbind(HeatingDD2018, HeatingDD2019, HeatingDD2020, HeatingDD2021) -> HeatingDD
+DD <- CoolingDD[HeatingDD, on=.(week = week)]
 
+Steam_Reg <- SteamPerDay[DD, on= .(ymdDate = week)]
 
 ```
 
