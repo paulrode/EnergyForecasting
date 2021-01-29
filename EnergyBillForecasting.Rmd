@@ -107,7 +107,7 @@ names <- colnames(HeatingDD2018)
 HeatingDD2018 <- melt(HeatingDD2018, measure.vars = names, variable.name = "week")
 HeatingDD2018 <- HeatingDD2018[, week := ymd(week)] 
 
-HeatingDD2019 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Heating2020.txt") 
+HeatingDD2019 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Heating2019.txt") 
 HeatingDD2019[Region == 3004,] -> HeatingDD2019
 HeatingDD2019[,!(1), with = FALSE] -> HeatingDD2019
 names <- colnames(HeatingDD2019)
@@ -125,8 +125,14 @@ HeatingDD <- rbind(HeatingDD2018, HeatingDD2019, HeatingDD2020)
 setnames(HeatingDD, c("week", "value"), c("week", "HDD"))
 
 DD <- CoolingDD[HeatingDD, on=.(week = week)]
+DD[,TDD := CDD + HDD]
 
 Steam_Reg <- SteamPerDay[DD, on= .(ymdDate = week)]
+Steam_Reg <- Steam_Reg[year(ymdDate) > 2018]
+Steam_Reg[month(ymdDate) != 01 & month(ymdDate) != 02 & month(ymdDate) != 03 & month(ymdDate) != 04 & month(ymdDate) != 05 & month(ymdDate) != 12 & month(ymdDate) != 11 & month(ymdDate) != 10 & month(ymdDate) != 09 ] -> summer
+
+Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & month(ymdDate) != 09  & month(ymdDate) != 12 & month(ymdDate) != 11 & month(ymdDate) != 10 ] -> winter
+
 
 ```
 
@@ -137,8 +143,13 @@ Steam_Reg <- SteamPerDay[DD, on= .(ymdDate = week)]
 #                               Do Simple Plots                               #
 ###############################################################################
 
-ggplot(Steam_Data, aes(ymdDate, Value)) + 
-  geom_boxplot(aes(group=month(ymdDate)))
+ggplot(summer, aes(TDD, Value)) + 
+  geom_smooth(method = lm) + 
+  geom_point()
+
+ggplot(winter, aes(TDD, Value)) + 
+  geom_smooth(method = lm) + 
+  geom_point()
 
 ggplot(data=SteamPerDay, aes(x=ymdDate, y=Value)) + 
   geom_line(size=0.001) + 
