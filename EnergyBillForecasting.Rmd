@@ -143,29 +143,9 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 #                               Do Simple Plots                               #
 ###############################################################################
 
-ggplot(summer, aes(TDD, Value)) + 
-  geom_smooth(method = lm) + 
-  geom_point()
+ggplot(Electric_Data, aes(x=Date, y=Value)) +
+  geom_line()
 
-ggplot(winter, aes(TDD, Value)) + 
-  geom_smooth(method = lm) + 
-  geom_point()
 
-ggplot(data=SteamPerDay, aes(x=ymdDate, y=Value)) + 
-  geom_line(size=0.001) + 
-  labs(x = "Date", y = "mlb") + 
-  theme_bw() 
-
-ggplot(data=SteamPerDay, aes(x=ymdDate, y=Value)) + 
-  geom_area(size=0.001) + 
-  labs(x = "Date", y = "mlb") + 
-  theme_bw() 
-
-ggplot(data=SteamPerDay, aes(x=ymdDate, y=Value)) + 
-  geom_point(size=0.001) + 
-  labs(x = "Date", y = "mlb") + 
-  theme_bw() 
-
-#SteamPerDay[ymdDate = "2019-01-13",]-> steam
 
 ```
