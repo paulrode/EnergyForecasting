@@ -66,6 +66,7 @@ if (!file.exists("data")) {
 setAs("character","myDate", function(from) {mdy_hm(from)})
 
 Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
+Electric_Data[,Value := as.integer(Value)]
 
 Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"), stringsAsFactors = TRUE)
 Steam_Data[, Value := as.integer(Value)]

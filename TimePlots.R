@@ -54,6 +54,7 @@ if (!file.exists("data")) {
 setAs("character","myDate", function(from) {mdy_hm(from)})
 
 Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
+Electric_Data[,Value := as.integer(Value)]
 
 Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"), stringsAsFactors = TRUE)
 Steam_Data[, Value := as.integer(Value)]
@@ -126,10 +127,8 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 #                               Do Simple Plots                               #
 ###############################################################################
 
-ggplot(Electric_Data[50:150]) +
-  geom_line(aes(x=Date, y=Value), 
-            alpha = 0.6, 
-            size = 0.6) +
-  theme_classic()
+ggplot(Electric_Data[1:.N], aes(x=Date, y=Value)) +
+  geom_line(alpha = 0.8, size = .1)
+
 
 
