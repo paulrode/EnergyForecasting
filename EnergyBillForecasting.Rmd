@@ -144,9 +144,9 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 #                               Do Simple Plots                               #
 ###############################################################################
 
-ggplot(Electric_Data, aes(x=Date, y=Value)) +
-  geom_line()
+ggplot(Electric_Data[year(Date) == 2019,], aes(x=Date, y=Value)) +
+  geom_line(alpha = 0.5)
 
-
+view(Electric_Data[year(Date) == 2019 & wday(Date) == 7 | wday(Date) == 1])
 
 ```
