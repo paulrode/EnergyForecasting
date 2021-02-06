@@ -147,6 +147,12 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 ggplot(Electric_Data[year(Date) == 2019,], aes(x=Date, y=Value)) +
   geom_line(alpha = 0.5)
 
-view(Electric_Data[year(Date) == 2019 & wday(Date) == 7 | wday(Date) == 1])
+Electric_Data[wday(Date) != 1 & wday(Date) != 7, sum(Value), by = .(date(Date))][1:240,]
+
+Electric_Data[wday(Date) = 2, sum(Value), by = .(date(Date))][1:240,]
+ggplot(Electric_Data[wday(Date) == 4, sum(Value), by = .(date(Date))], aes(x=date, y=V1)) +
+  geom_line(alpha = 0.5)
+
+Electric_Data[, sum(Value), by = .(date(Date))] 
 
 ```
