@@ -154,9 +154,9 @@ Electric_Data[wday(Date) == 2, sum(Value), by = (date(Date))][1:240,]
 ggplot(Electric_Data[wday(Date) == c(2:6), sum(Value), by = (date(Date))], aes(x=date, y=V1)) +
   geom_line( alpha = 0.5)
 
-ggplot(Electric_Data[wday(Date) == c(2:6), sum(Value), by = (date(Date))], aes(x=date, y=V1)) +
+ggplot(Electric_Data[, sum(Value), by = list(year(Date),month(Date))], aes(x=month, y=V1)) +
   geom_line(alpha = 0.5)
 
-ggplot(Electric_Data[wday(Date) == c(1,7), sum(Value), by = (date(Date))], aes(x=date, y=V1)) +
+ggplot(Electric_Data[wday(Date) == 7, sum(Value), by = (date(Date))], aes(x=date, y=V1)) +
   geom_line(alpha = 0.5)
 ```
