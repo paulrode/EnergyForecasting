@@ -151,45 +151,6 @@ ggplot(Electric_Data[year(Date) > 2019,], aes(x=Date, y=Value)) +
 
 Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
 Electric_Data[,Value := as.integer(Value)]
-Monthly_Electric <- Electric_Data[, SumValue := sum(Value), by= month(Date)][,,by = (Date == floor_date(date, "month"))]
-
-
-
-
-Electric_Data %>% group_by(month=floor_date(Date, "month")) %>% summarize(SumValue=sum(Value)) -> Monthly_Electric
-Monthly_Electric[,.(Date, SumValue)][,c("month", "year") := list(month(Date), year(Date))][,.(month, year, SumValue)] -> Monthly_Electric
-
-
-
-
-
-
-
-# expenses %>% group_by(month=floor_date(date, "month")) %>% summarize(amount=sum(amount))
-
-# DT[, Runoff2 := sum(Runoff), by=list(Key, year = year(Date), month = month(Date))]
-
-
-
-Electric_Data[, `:=`( month = month(Date), year = year(Date))][,SumValue := sum(Value), by = list(month, year)][, `:=`(Date = NULL, Value = NULL)]
-
-# Electric_Data[,Date := format(as.Date(Date), "%Y-%m")]
-Electric_Data[, c("month", "year") := list(month(Date), year(Date))][,SumValue := sum(Value), by = list(month, year)]
-
-#DT[, c("year", "month") := list(year(Date), month(Date))]
-#DT[, Runoff2 := sum(Runoff), by=list(Key, year, month)]
-#DT[, mean(Runoff2), by=list(Key, month)]
-
-
-Electric_Data[,Date := format(as.Date(Date), "%Y-%m")][,SumValue := sum(Value), by = Date] -> Monthly_Electric
-
-
-
-
-# [, `:=`(Date = NULL, Value = NULL)]
-Electric_Data[wday(Date) != 1 & wday(Date) != 7, sum(Value), by = (date(Date))][1:240,]
-
-Electric_Data[wday(Date) == 2, sum(Value), by = (date(Date))][Date < 2020]
+Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
 
 ```
-
