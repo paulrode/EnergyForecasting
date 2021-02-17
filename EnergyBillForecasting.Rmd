@@ -144,13 +144,18 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 #                               Do Simple Plots                               #
 ###############################################################################
 
+Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
+
+ggplot(Electric_Data, aes(wday(Date),Value)) +
+  geom_boxplot(position = "dodge2")
+
+Monthly_Electric %>% ggplot(aes(x = Date, y = SumValue)) +
+  geom_point() +
+  geom_smooth()
+
 ggplot(Electric_Data[year(Date) > 2019,], aes(x=Date, y=Value)) +
   geom_line(alpha = 0.5) +
   stat_smooth() +
   geom_smooth()
-
-Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
-Electric_Data[,Value := as.integer(Value)]
-Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
 
 ```
