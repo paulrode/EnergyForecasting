@@ -67,6 +67,9 @@ setAs("character","myDate", function(from) {mdy_hm(from)})
 
 Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
 Electric_Data[,Value := as.integer(Value)]
+Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
+Min_Electric <- Electric_Data[, .(MinValue=min(Value)), by=.(day(Date))]
+
 
 Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"), stringsAsFactors = TRUE)
 Steam_Data[, Value := as.integer(Value)]
@@ -144,18 +147,15 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 #                               Do Simple Plots                               #
 ###############################################################################
 
-Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
 
-ggplot(Electric_Data, aes(wday(Date),Value)) +
+
+ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
   geom_boxplot(position = "dodge2")
 
-Monthly_Electric %>% ggplot(aes(x = Date, y = SumValue)) +
-  geom_point() +
-  geom_smooth()
+ggplot(Electric_Data, aes(as.factor(month(Date)),Value)) +
+  geom_boxplot(position = "dodge2") +
+  facet_grid(year(Date)~.)
 
-ggplot(Electric_Data[year(Date) > 2019,], aes(x=Date, y=Value)) +
-  geom_line(alpha = 0.5) +
-  stat_smooth() +
-  geom_smooth()
+
 
 ```
