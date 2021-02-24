@@ -103,6 +103,7 @@ CollingDD2020 <- CoolingDD2020[, week := ymd(week)]
 
 CoolingDD <- rbind(CoolingDD2018, CoolingDD2019, CoolingDD2020) 
 setnames(CoolingDD, c("week", "value"), c("week", "CDD"))
+rm("CoolingDD2018","CoolingDD2019", "CoolingDD2020")
 
 
 HeatingDD2018 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Heating2018.txt") 
@@ -128,9 +129,11 @@ HeatingDD2020 <- HeatingDD2020[, week := ymd(week)]
 
 HeatingDD <- rbind(HeatingDD2018, HeatingDD2019, HeatingDD2020) 
 setnames(HeatingDD, c("week", "value"), c("week", "HDD"))
+rm("HeatingDD2018","HeatingDD2019", "HeatingDD2020")
 
 DD <- CoolingDD[HeatingDD, on=.(week = week)]
 DD[,TDD := CDD + HDD]
+rm("CoolingDD", "HeatingDD")
 
 Steam_Reg <- SteamPerDay[DD, on= .(ymdDate = week)]
 Steam_Reg <- Steam_Reg[year(ymdDate) > 2018]
