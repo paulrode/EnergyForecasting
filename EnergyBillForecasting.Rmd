@@ -68,8 +68,10 @@ setAs("character","myDate", function(from) {mdy_hm(from)})
 Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
 Electric_Data[,Value := as.integer(Value)]
 Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
-Min_Electric <- Electric_Data[, MinValue :=min(Value), by=list(day(Date), month(Date))]
-Max_Electric <- Electric_Data[, MaxValue :=max(Value), by=list(day(Date), month(Date))]
+Electric_Data[, MinValue :=min(Value), by=list(day(Date), month(Date))]
+Electric_Data[, MaxValue :=max(Value), by=list(day(Date), month(Date))]
+Daily_Electric <- Electric_Data[, .(DayValue=sum(Value)), .(wday(Date), month(Date), year(Date))]
+
 
 
 Steam_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (3).csv", colClasses = c("myDate", "integer", "Character"), stringsAsFactors = TRUE)
@@ -85,21 +87,21 @@ CoolingDD2018[Region == 3004,] -> CoolingDD2018
 CoolingDD2018[,!(1), with = FALSE] -> CoolingDD2018
 names <- colnames(CoolingDD2018)
 CoolingDD2018 <- melt(CoolingDD2018, measure.vars = names, variable.name = "week")
-CollingDD2018 <- CoolingDD2018[, week := ymd(week)] 
+CoolingDD2018 <- CoolingDD2018[, week := ymd(week)] 
 
 CoolingDD2019 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling2019.txt") 
 CoolingDD2019[Region == 3004,] -> CoolingDD2019
 CoolingDD2019[,!(1), with = FALSE] -> CoolingDD2019
 names <- colnames(CoolingDD2019)
 CoolingDD2019 <- melt(CoolingDD2019, measure.vars = names, variable.name = "week")
-CollingDD2019 <- CoolingDD2019[, week := ymd(week)] 
+CoolingDD2019 <- CoolingDD2019[, week := ymd(week)] 
 
 CoolingDD2020 <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/ClimateDivisions.Cooling2020.txt") 
 CoolingDD2020[Region == 3004,] -> CoolingDD2020
 CoolingDD2020[,!(1), with = FALSE] -> CoolingDD2020
 names <- colnames(CoolingDD2020)
 CoolingDD2020 <- melt(CoolingDD2020, measure.vars = names, variable.name = "week")
-CollingDD2020 <- CoolingDD2020[, week := ymd(week)] 
+CoolingDD2020 <- CoolingDD2020[, week := ymd(week)] 
 
 CoolingDD <- rbind(CoolingDD2018, CoolingDD2019, CoolingDD2020) 
 setnames(CoolingDD, c("week", "value"), c("week", "CDD"))
@@ -169,6 +171,8 @@ ggplot(Electric_Data, aes(as.factor(month(Date)),Value)) +
   geom_hline(aes(yintercept = max(Value)), color = "blue") +
   geom_boxplot(position = "dodge2") +
   facet_grid(year(Date)~.) 
+
+# Regressions 
 
 
 
