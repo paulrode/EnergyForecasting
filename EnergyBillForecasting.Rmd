@@ -70,7 +70,8 @@ Electric_Data[,Value := as.integer(Value)]
 Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
 Electric_Data[, MinValue :=min(Value), by=list(day(Date), month(Date))]
 Electric_Data[, MaxValue :=max(Value), by=list(day(Date), month(Date))]
-Daily_Electric <- Electric_Data[, .(DayValue=sum(Value)), .(wday(Date), month(Date), year(Date))]
+Daily_Electric <- Electric_Data[, .(DayValue=sum(Value)), .(day(Date), month(Date), year(Date))]
+Daily_Electric[, week := ymd(paste(Daily_Electric$year, Daily_Electric$month, Daily_Electric$day, sep = '-'))][,`:=` (day=NULL, year=NULL, month=NULL)]
 
 
 
@@ -136,6 +137,8 @@ rm("HeatingDD2018","HeatingDD2019", "HeatingDD2020")
 DD <- CoolingDD[HeatingDD, on=.(week = week)]
 DD[,TDD := CDD + HDD]
 rm("CoolingDD", "HeatingDD")
+Daily <- Daily_Electric[DD, on =.(week=week)]
+
 
 Steam_Reg <- SteamPerDay[DD, on= .(ymdDate = week)]
 Steam_Reg <- Steam_Reg[year(ymdDate) > 2018]
@@ -145,6 +148,20 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 
 
 ```
+
+
+```{r, echo="FALSE", results="hide", include="FALSE"}
+lm()
+
+
+
+
+
+```
+
+
+
+
 
 
 ```{r, echo="FALSE", results='hide', include=FALSE }
