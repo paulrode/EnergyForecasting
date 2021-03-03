@@ -151,9 +151,14 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 
 
 ```{r, echo="FALSE", results="hide", include="FALSE"}
+
+Daily2 <- Daily[year(week) <= 2019,]
+
 lmDaily <- lm(Daily$DayValue ~ Daily$TDD, data=Daily)
 summary(lmDaily)
 
+lmDaily2 <- lm(Daily2$DayValue ~ Daily2$TDD, data=Daily2)
+summary(lmDaily2)
 
 
 
