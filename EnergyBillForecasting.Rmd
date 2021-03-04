@@ -160,7 +160,11 @@ summary(lmDaily)
 lmDaily2 <- lm(Daily2$DayValue ~ Daily2$TDD, data=Daily2)
 summary(lmDaily2)
 
+lmcatday <- lm(DayValue ~ wday(week), data=Daily)
+summary(lmcatday)
 
+ggplot(data = Daily[wday(week) == 3 & month(week) == 7,] , aes(x = TDD, y = DayValue)) +
+  geom_point()
 
 ```
 
