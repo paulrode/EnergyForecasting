@@ -152,10 +152,20 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 
 ```{r, echo="FALSE", results="hide", include="FALSE"}
 
+
+
+
+
 Daily2 <- Daily[year(week) <= 2019,]
 
-lmDaily <- lm(Daily$DayValue ~ Daily$TDD, data=Daily)
+lmDaily <- lm(summer$Value ~ summer$CDD, data = summer)
 summary(lmDaily)
+
+ggplot(data = summer, aes(x = CDD, y = Value)) +
+  geom_point() +
+  geom_smooth()
+
+
 
 lmDaily2 <- lm(Daily2$DayValue ~ Daily2$TDD, data=Daily2)
 summary(lmDaily2)
@@ -163,8 +173,16 @@ summary(lmDaily2)
 lmcatday <- lm(DayValue ~ wday(week), data=Daily)
 summary(lmcatday)
 
-ggplot(data = Daily[wday(week) == 3 & month(week) == 7,] , aes(x = TDD, y = DayValue)) +
-  geom_point()
+ggplot(data = Daily[year(week) == 2019 & month(week) == c(6,7,8) & wday(week) == c(2,3,4,5,6), ] , aes(x = CDD, y = DayValue)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(data = Daily[year(week) == 2019 & month(week) == c(1,2,3,12) & wday(week) == c(2,3,4,5,6), ] , aes(x = HDD, y = DayValue)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(data = Electric_Data[year(Date) == 2019 & month(Date) == c(3,6),], aes(Date, Value)) +
+  geom_line()
 
 ```
 
