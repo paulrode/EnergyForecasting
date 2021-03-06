@@ -165,6 +165,11 @@ ggplot(data = summer, aes(x = CDD, y = Value)) +
   geom_point() +
   geom_smooth()
 
+ggplot(data = summer, aes(x = ymdDate, y = Value)) +
+  geom_line() +
+  geom_smooth()
+  
+
 
 
 lmDaily2 <- lm(Daily2$DayValue ~ Daily2$TDD, data=Daily2)
@@ -197,10 +202,10 @@ ggplot(data = Electric_Data[year(Date) == 2019 & month(Date) == c(3,6),], aes(Da
 #                               Do Simple Plots                               #
 ###############################################################################
 
-ggplot(Electric_Data, aes(Date,Value)) +
+ggplot(Electric_Data[year(Date) == 2019 & month(Date) == 6,], aes(Date,Value)) +
   geom_line() +
-  geom_smooth(aes(x = Date, y = MinValue), color="blue") +
-  geom_smooth(aes(x = Date, y = MaxValue), color="red")
+  geom_line(aes(x = Date, y = MinValue), color="blue") +
+  geom_line(aes(x = Date, y = MaxValue), color="red")
   
 
 ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
