@@ -19,6 +19,8 @@ output: html_document
     library("tidyverse")
     library("gridExtra")
     library("lubridate")
+    library("scales")
+    library("ggthemes")
   # Package for building tables in markdown and notebook 
     library("knitr")
     library("kableExtra") 
@@ -71,7 +73,8 @@ Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(
 Electric_Data[, MinValue :=min(Value), by=list(day(Date), month(Date))]
 Electric_Data[, MaxValue :=max(Value), by=list(day(Date), month(Date))]
 Daily_Electric <- Electric_Data[, .(DayValue=sum(Value)), .(day(Date), month(Date), year(Date))]
-Daily_Electric[, week := ymd(paste(Daily_Electric$year, Daily_Electric$month, Daily_Electric$day, sep = '-'))][,`:=` (day=NULL, year=NULL, month=NULL)][DayValue != NA]
+Daily_Electric[, week := ymd(paste(Daily_Electric$year, Daily_Electric$month, Daily_Electric$day, sep = '-'))][,`:=` (day=NULL, year=NULL, month=NULL)]
+
 
 
 
@@ -151,43 +154,19 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 
 
 ```{r, echo="FALSE", results="hide", include="FALSE"}
+# Plot out the time series 
+qplot(x=Date, y=Value, data=Electric_Data, na.rm=TRUE, main="Electric Interval Data (kWh)", xlab="Date", ylab="kWH")
+
+# Plot out the time series with ggplot
+ElectricTS <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
+  geom_point(na.rm=TRUE, color="blue", size=0.1, pch=1) +
+  ggtitle("Interval Data (kWh)") +
+    xlab("Date-Time") +
+    ylab("kWh")
 
 
 
 
-
-Daily2 <- Daily[year(week) <= 2019,]
-
-lmDaily <- lm(summer$Value ~ summer$CDD, data = summer)
-summary(lmDaily)
-
-ggplot(data = summer, aes(x = CDD, y = Value)) +
-  geom_point() +
-  geom_smooth()
-
-ggplot(data = summer, aes(x = ymdDate, y = Value)) +
-  geom_line() +
-  geom_smooth()
-  
-
-
-
-lmDaily2 <- lm(Daily2$DayValue ~ Daily2$TDD, data=Daily2)
-summary(lmDaily2)
-
-lmcatday <- lm(DayValue ~ wday(week), data=Daily)
-summary(lmcatday)
-
-ggplot(data = Daily[year(week) == 2019 & month(week) == c(6,7,8) & wday(week) == c(2,3,4,5,6), ] , aes(x = CDD, y = DayValue)) +
-  geom_point() +
-  geom_smooth()
-
-ggplot(data = Daily[year(week) == 2019 & month(week) == c(1,2,3,12) & wday(week) == c(2,3,4,5,6), ] , aes(x = HDD, y = DayValue)) +
-  geom_point() +
-  geom_smooth()
-
-ggplot(data = Electric_Data[year(Date) == 2019 & month(Date) == c(3,6),], aes(Date, Value)) +
-  geom_line()
 
 ```
 
@@ -212,16 +191,9 @@ ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
   geom_boxplot(position = "dodge2") +
   facet_grid(year(Date)~.) 
 
-ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
+ggplot(Electric_Data[month(Date) == 5], aes(as.factor(wday(Date)),Value)) +
   geom_boxplot(position = "dodge2") +
-  facet_grid(month(Date)~year(Date)) 
-
-ggplot(Electric_Data, aes(as.factor(month(Date)),Value)) +
-  geom_hline(aes(yintercept = max(Value)), color = "blue") +
-  geom_boxplot(position = "dodge2") +
-  facet_grid(year(Date)~.) 
-
-# Regressions 
+  facet_grid(.~year(Date)) 
 
 
 
