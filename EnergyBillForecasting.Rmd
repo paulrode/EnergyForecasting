@@ -157,15 +157,23 @@ Steam_Reg[month(ymdDate) != 06 & month(ymdDate) != 07 & month(ymdDate) != 08 & m
 # Plot out the time series 
 qplot(x=Date, y=Value, data=Electric_Data, na.rm=TRUE, main="Electric Interval Data (kWh)", xlab="Date", ylab="kWH")
 
+# Define Start and end times for the subset as R objects that are the time class
+startTime <- as_datetime("2019-01-01")
+endTime <- as_datetime("2020-01-01")
+
+# create a start and end time R object
+start.end <- c(startTime,endTime)
+
+ElectricTSyb3m <- ElectricTS +
+  (scale_x_datetime(breaks=date_breaks("3 months"),labels=date_format("%b %y"), limits=start.end))
+
+ElectricTSyb3m
 # Plot out the time series with ggplot
 ElectricTS <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
   geom_point(na.rm=TRUE, color="blue", size=0.1, pch=1) +
   ggtitle("Interval Data (kWh)") +
     xlab("Date-Time") +
     ylab("kWh")
-
-
-
 
 
 ```
@@ -178,22 +186,16 @@ ElectricTS <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
 ```{r, echo="FALSE", results='hide', include=FALSE }
 
 ###############################################################################
-#                               Do Simple Plots                               #
+#                              A LOOK AT DAYS                                 #
 ###############################################################################
-
-ggplot(Electric_Data[year(Date) == 2019 & month(Date) == 6,], aes(Date,Value)) +
-  geom_line() +
-  geom_line(aes(x = Date, y = MinValue), color="blue") +
-  geom_line(aes(x = Date, y = MaxValue), color="red")
-  
 
 ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
   geom_boxplot(position = "dodge2") +
   facet_grid(year(Date)~.) 
 
-ggplot(Electric_Data[month(Date) == 5], aes(as.factor(wday(Date)),Value)) +
+ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
   geom_boxplot(position = "dodge2") +
-  facet_grid(.~year(Date)) 
+  facet_grid(month(Date)~year(Date))
 
 
 
