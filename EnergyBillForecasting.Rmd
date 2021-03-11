@@ -171,10 +171,19 @@ ElectricTSyb3m
 # Plot out the time series with ggplot
 ElectricTS <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
   geom_point(na.rm=TRUE, color="blue", size=0.1, pch=1) +
+  facet_grid(month(Date)~year(Date)) +
   ggtitle("Interval Data (kWh)") +
     xlab("Date-Time") +
     ylab("kWh")
+ElectricTS
 
+
+ElectricArea <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
+  geom_area() +
+  ggtitle("Interval Data (kWh)") +
+    xlab("Date-Time") +
+    ylab("kWh")
+ElectricArea
 
 ```
 
