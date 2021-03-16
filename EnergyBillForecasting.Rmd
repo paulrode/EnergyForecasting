@@ -68,6 +68,7 @@ if (!file.exists("data")) {
 setAs("character","myDate", function(from) {mdy_hm(from)})
 
 Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH Energy - Data (4).csv", colClasses = c(Date = "myDate", Value = "integer", Unit = "character"), stringsAsFactors = TRUE)
+
 Electric_Data[,Value := as.integer(Value)]
 Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
 Electric_Data[, MinValue :=min(Value), by=list(day(Date), month(Date))]
@@ -164,26 +165,28 @@ endTime <- as_datetime("2020-01-01")
 # create a start and end time R object
 start.end <- c(startTime,endTime)
 
-ElectricTSyb3m <- ElectricTS +
-  (scale_x_datetime(breaks=date_breaks("3 months"),labels=date_format("%b %y"), limits=start.end))
-
-ElectricTSyb3m
 # Plot out the time series with ggplot
 ElectricTS <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
   geom_point(na.rm=TRUE, color="blue", size=0.1, pch=1) +
-  facet_grid(month(Date)~year(Date)) +
+  facet_grid(quarter(Date)~year(Date)) +
   ggtitle("Interval Data (kWh)") +
     xlab("Date-Time") +
     ylab("kWh")
 ElectricTS
 
 
-ElectricArea <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
-  geom_area() +
+ElectricTSyb3m <- ElectricTS +
+  (scale_x_datetime(breaks=date_breaks("3 months"),labels=date_format("%b %y"), limits=start.end))
+
+ElectricTSyb3m
+
+
+ElectricLine <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
+  geom_line() +
   ggtitle("Interval Data (kWh)") +
     xlab("Date-Time") +
     ylab("kWh")
-ElectricArea
+ElectricLine
 
 ```
 
@@ -205,6 +208,10 @@ ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
 ggplot(Electric_Data, aes(as.factor(wday(Date)),Value)) +
   geom_boxplot(position = "dodge2") +
   facet_grid(month(Date)~year(Date))
+
+ggplot(Electric_Data, aes(as.factor(quarter(Date)),Value)) +
+  geom_boxplot(position = "dodge2") +
+  facet_grid(.~year(Date))
 
 
 
