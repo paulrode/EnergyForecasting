@@ -71,7 +71,11 @@ Electric_Data <- fread("C:/Users/paulr/Documents/R/EnergyForecasting/data/MACH E
 
 Electric_Data[,Value := as.integer(Value)]
 Monthly_Electric <- Electric_Data[, .(SumValue=sum(Value)), .(month(Date), year(Date))][,month_year := paste(year,month,15,sep='-')][,Date := ymd(month_year),]
-Electric_Data[, MinValue :=min(Value), by=list(day(Date), month(Date))]
+
+
+Electric_Data_Min  <-  Electric_Data[, MinValue :=min(Value), by=list(day(Date), month(Date), year(Date))]
+
+
 Electric_Data[, MaxValue :=max(Value), by=list(day(Date), month(Date))]
 Daily_Electric <- Electric_Data[, .(DayValue=sum(Value)), .(day(Date), month(Date), year(Date))]
 Daily_Electric[, week := ymd(paste(Daily_Electric$year, Daily_Electric$month, Daily_Electric$day, sep = '-'))][,`:=` (day=NULL, year=NULL, month=NULL)]
@@ -181,8 +185,9 @@ ElectricTSyb3m <- ElectricTS +
 ElectricTSyb3m
 
 
-ElectricLine <-  ggplot(data = Electric_Data, aes(x=Date, y=Value)) +
+ElectricLine <-  ggplot(data = Electric_Data_Min[year(Date) == 2019 & month(Date) == 3  ], aes(x=Date, y=Value)) +
   geom_line() +
+  geom_line(aes(x=Date, y=MinValue), color = "blue") +
   ggtitle("Interval Data (kWh)") +
     xlab("Date-Time") +
     ylab("kWh")
